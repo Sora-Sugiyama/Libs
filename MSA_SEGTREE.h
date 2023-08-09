@@ -2,7 +2,7 @@
  * MSA_SEGTREE.h
  *
  *  Created on: 2023. 8. 9.
- *      Author: master
+ *      Author: Sora Sugiyama
  */
 
 #ifndef MSA_SEGTREE_H_
