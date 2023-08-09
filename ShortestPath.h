@@ -2,7 +2,7 @@
  * ShortestPath.h
  *
  *  Created on: 2023. 8. 9.
- *      Author: Sora Sugiyama (291sa)
+ *      Author: master
  */
 
 #ifndef SHORTESTPATH_H_
@@ -21,7 +21,7 @@ vector<long long>dijkstra(vector<vector<pair<int,long long> > >G,int dpt){
 	priority_queue<pair<long long,int> >pq;
 	pq.push({0,dpt});dist[dpt]=0;
 	while(!pq.empty()){
-		pair<long long,int>u=pq.front();pq.pop();
+		pair<long long,int>u=pq.top();pq.pop();
 		if(-u.first>dist[u.second])continue;
 		for(auto v:G[u.second]){
 			if(v.second<0){
@@ -39,7 +39,7 @@ vector<long long>dijkstra(vector<vector<pair<int,long long> > >G,int dpt){
 
 // 0-1 BFS
 vector<int>zoBFS(vector<vector<pair<int,int> > >G,int dpt){
-	vector<int>dist(G.size()+3,9e18);
+	vector<int>dist(G.size()+3,2e9);
 	deque<int>dq;
 	dq.push_back(dpt);dist[dpt]=0;
 	while(!dq.empty()){
@@ -97,7 +97,7 @@ vector<long long>SPFA(vector<vector<pair<int,long long> > >G,int dpt){
 				dist[v.first]=v.second+dist[u];
 				if(!inQ[v.first]){
 					cy[v.first]++;
-					if(cy[v.first]>=N){
+					if(cy[v.first]>=(int)G.size()){
 						cout<<"Negative Cycle exist.\n";
 						return vector<long long>();
 					}
