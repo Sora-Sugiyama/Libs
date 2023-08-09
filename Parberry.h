@@ -21,6 +21,7 @@ vector<vector<int> >G,H;
 vector<int>visit,answer;
 int N=0,K=0;
 vector<pair<int,int> >PP;
+vector<pair<int,int> >knightTour;
 int coordi2idx(int x,int y,int m){
 	return (x-1)*m+y;
 }
@@ -74,7 +75,8 @@ int g(int x,int y){
 }
 
 void findPath(int x){
-	cout<<PP[x].first<<" "<<PP[x].second<<"\n";
+	//cout<<PP[x].first<<" "<<PP[x].second<<"\n";
+	knightTour.push_back(PP[x]);
 	for(int y:H[x]){
 		y=g(x,y);
 		if(visit[y])continue;
@@ -106,12 +108,12 @@ void subP(int n,int m,int nn,int mm){
 	K+=n*m;
 }
 
-void Parberry(int n,int x0,int y0){
+vector<pair<int,int> >Parberry(int n,int x0,int y0){
 	N=n;K=0;
 	H.resize(N*N+1);
 	if(N<5||(N&1)){
 		cout<<"There is no closed tour\n";
-		return;
+		return vector<pair<int,int> >();
 	}
 	srand(time(NULL));
 	PP.resize(N*N+3);
@@ -119,7 +121,7 @@ void Parberry(int n,int x0,int y0){
 		subP(N,N,0,0);
 		visit=vector<int>(N*N+3,0);visit[coordi2idx(x0,y0,N)]=1;
 		findPath(coordi2idx(x0,y0,N));
-		return;
+		return knightTour;
 	}else{
 		subP(N/2-2,N/2+2,0,0);A={(N/2-2)*(N/2+2),(N/2-4)*(N/2+2)-1};B={K,K};
 		subP(N/2-2,N/2-2,0,N/2+2);B={B.first+(N/2-4)*(N/2-2)+1,B.second+(N/2-3)*(N/2-2)+3};C={K,K};
@@ -128,7 +130,7 @@ void Parberry(int n,int x0,int y0){
 		visit=vector<int>(N*N+3,0);visit[coordi2idx(x0,y0,N)]=1;
 		findPath(coordi2idx(x0,y0,N));
 	}
-	return;
+	return knightTour;
 }
 
 #endif /* PARBERRY_H_ */
