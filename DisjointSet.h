@@ -9,6 +9,7 @@
 #define DISJOINTSET_H_
 
 #include <vector>
+using namespace std;
 
 struct DS{
 
