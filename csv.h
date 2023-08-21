@@ -21,10 +21,12 @@ vector<vector<string> >csvReader(string path,char deli,bool Header){
         ret.push_back(vector<string>());
         vector<string>&vs=ret.back();
         string tmp="";
+        bool flag=true;
         while(file.good()){
             char c=file.get();
             if(c=='\n')break;
-            if(c==','){
+            if(c=='"')flag^=1;
+            if(c==','&&flag){
                 if(tmp=="")tmp="null";
                 vs.push_back(tmp);
                 tmp="";
