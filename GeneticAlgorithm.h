@@ -33,7 +33,7 @@ struct GA{
 		GenerationLog.push_back(Obj);
 	}
 
-	void reGeneration(vector<int>objNum,int Number_of_Mutation){
+	void nextGeneration(vector<int>objNum,int Number_of_Mutation){
 		srand(time(NULL));
 
 		int m=Obj.size();
