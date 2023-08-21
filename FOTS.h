@@ -36,9 +36,6 @@ mat FOTSs(mat w,mat b,mat x,int epch){
 	for(int i=1;i<=epch;i++){
 		w=FOTS(w,b,x);
 		if(i%100==0){
-			mat tmp=Product(x,w);
-			for(auto &u:tmp)u[0]=(u[0]<0.5?0:1);
-			mat rr=Subtract(tmp,b);
 			cout<<"Loss : "<<Product(Trans(rr),rr)[0][0]<<"\n";
 		}
 	}
