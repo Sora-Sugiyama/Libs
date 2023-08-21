@@ -21,16 +21,18 @@ mat FOTS(mat w,mat b,mat x){
 			double m1=(le+le+ri)/3,m2=(le+ri+ri)/3;
 			w[i][0]=m1;
 			mat r=Subtract(Product(x,w),b);
-			double loss1=Product(r,Trans(r))[0][0];
+			double loss1=Product(Trans(r),r)[0][0];
 			w[i][0]=m2;
 			r=Subtract(Product(x,w),b);
-			double loss2=Product(r,Trans(r))[0][0];
+			double loss2=Product(Trans(r),r)[0][0];
 			if(loss1<loss2)ri=m2;else le=m1;
 		}
 		w[i][0]=le;
 	}
-	mat rr=Subtract(Product(x,w),b);
-	cout<<"Loss : "<<Product(rr,Trans(rr))[0][0]<<"\n";
+	mat tmp=Product(x,w);
+	for(auto &u:tmp)u[0]=(u[0]<0.5?0:1);
+	mat rr=Subtract(tmp,b);
+	cout<<"Loss : "<<Product(Trans(rr),rr)[0][0]<<"\n";
 	return w;
 }
 
