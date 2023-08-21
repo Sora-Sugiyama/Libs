@@ -16,7 +16,7 @@
 
 mat FOTS(mat w,mat b,mat x){
 	for(int i=0;i<(int)w.size();i++){
-		double le=-1e18,ri=1e18;int k=100;
+		double le=-10,ri=10;int k=30;
 		while(k--){
 			double m1=(le+le+ri)/3,m2=(le+ri+ri)/3;
 			w[i][0]=m1;
@@ -29,11 +29,19 @@ mat FOTS(mat w,mat b,mat x){
 		}
 		w[i][0]=le;
 	}
-	mat tmp=Product(x,w);
-	for(auto &u:tmp)u[0]=(u[0]<0.5?0:1);
-	mat rr=Subtract(tmp,b);
-	cout<<"Loss : "<<Product(Trans(rr),rr)[0][0]<<"\n";
 	return w;
 }
 
+mat FOTSs(mat w,mat b,mat x,int epch){
+	for(int i=1;i<=epch;i++){
+		w=FOTS(w,b,x);
+		if(i%100==0){
+			mat tmp=Product(x,w);
+			for(auto &u:tmp)u[0]=(u[0]<0.5?0:1);
+			mat rr=Subtract(tmp,b);
+			cout<<"Loss : "<<Product(Trans(rr),rr)[0][0]<<"\n";
+		}
+	}
+	return w;
+}
 #endif /* FOTS_H_ */
