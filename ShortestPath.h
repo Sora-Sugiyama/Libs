@@ -30,7 +30,7 @@ vector<long long>Dijkstra(vector<vector<pair<int,long long> > >G,int dpt){
 			}
 			if(dist[v.first]>v.second-u.first){
 				dist[v.first]=v.second-u.first;
-				pq.push({v.first,u.first-v.second});
+				pq.push({u.first-v.second,v.first});
 			}
 		}
 	}
