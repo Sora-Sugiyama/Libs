@@ -16,7 +16,7 @@
 // inf = 9e18
 
 // Dijkstra's Algorithm
-vector<long long>dijkstra(vector<vector<pair<int,long long> > >G,int dpt){
+vector<long long>Dijkstra(vector<vector<pair<int,long long> > >G,int dpt){
 	vector<long long>dist(G.size()+3,9e18);
 	priority_queue<pair<long long,int> >pq;
 	pq.push({0,dpt});dist[dpt]=0;
