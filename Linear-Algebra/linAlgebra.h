@@ -96,7 +96,7 @@ vecd SLE_Solver(mat A,vecd b){ // [1]
 	return x;
 }
 
-mat Inversion(mat A){
+mat Inversion(mat A){ // [1]
 	if(A.size()!=A.back().size()){
 		cout<<"ERROR : This matrix is non-square matrix. - Inversion() -"<<endl;
 		return mat();
@@ -168,14 +168,52 @@ double dynamic_det(mat A,double detA,int k,vecd u){ // [2]
 	return (1+Product({ei},Product(Ainv,Trans({w})))[0][0])*detA;
 }
 
-//double det(mat A){
-//}
+double det(mat A){ // [1], [3]
+
+	if(A.empty())return 0;
+
+	if(A.size()!=A.back().size()){
+		cout<<"ERROR : This matrix is non-square matrix. - det() -"<<endl;
+		return 0;
+	}
+
+	// In Small Cases, Leibniz formula is more efficient.
+	if((int)A.size()==1)return A[0][0];
+	if((int)A.size()==2)return A[0][0]*A[1][1]-A[0][1]*A[1][0];
+	if((int)A.size()==3)return A[0][0]*(A[1][1]*A[2][2]-A[1][2]*A[2][1])+A[0][1]*(A[1][2]*A[2][0]-A[1][0]*A[2][2])+A[0][2]*(A[1][0]*A[2][1]-A[1][1]*A[2][0]);
+
+	int n=A.size(),kk=0;
+	double detA=1;
+
+	for(int k=0;k<n;k++){
+		double p=0;
+		for(int i=k;i<n;i++){
+			if(lfabs(A[i][k])>p){
+				p=A[i][k];
+				kk=i;
+			}
+		}
+		if(p==0)return 0;
+
+		if(k!=kk)detA*=-1.0;
+		for(int i=0;i<n;i++)swap(A[k][i],A[kk][i]);
+		for(int i=k+1;i<n;i++){
+			A[i][k]/=A[k][k];
+			for(int j=k+1;j<n;j++)A[i][j]-=A[i][k]*A[k][j];
+		}
+		detA*=A[k][k];
+	}
+
+	return detA;
+}
+
 
 /*
  * Reference
  *
  * [1] Thomas H C et al (2009) Introduction to Algorithms, Third Edition. The MIT Press
  * [2] Vissarion F, Luis P (2016) Faster Geometric Algorithms via Dynamic Determinant Computation. Computational Geometry 54:1-16
+ * [3] David C L et al (2014) Linear Algebra and Its Applications 5th Edition. Pearson
  */
 
 #endif /* LINALGEBRA_H_ */
