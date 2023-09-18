@@ -123,17 +123,19 @@ mat Inversion(mat A){ // [1]
 	}
 
 	mat X(n,vecd(n,0)),Y(n,vecd(n,0));
+
 	for(int k=0;k<n;k++){
 		for(int i=0;i<n;i++){
-			Y[k][i]=I[k][pi[i]];
-			for(int j=0;j<i;j++)Y[k][i]-=L[i][j]*Y[k][j];
+			Y[i][k]=I[pi[i]][k];
+			for(int j=0;j<i;j++)Y[i][k]-=L[i][j]*Y[j][k];
 		}
 		for(int i=n-1;i>=0;i--){
-			X[k][i]=Y[k][i];
-			for(int j=n;j>i;j--)X[k][i]-=U[i][j]*X[k][j];
-			X[k][i]/=U[i][i];
+			X[i][k]=Y[i][k];
+			for(int j=n-1;j>i;j--)X[i][k]-=U[i][j]*X[j][k];
+			X[i][k]/=U[i][i];
 		}
 	}
+
 	return X;
 }
 
