@@ -32,9 +32,8 @@ pair<mat,veci>LUP_Decomposition(mat A){ // [1]
 		double p=0;
 		for(int i=k;i<n;i++){
 			if(lfabs(A[i][k])>p){
-				p=A[i][k];
+				p=lfabs(A[i][k]);
 				kk=i;
-				break;
 			}
 		}
 		if(p==0){
@@ -192,9 +191,8 @@ double det(mat A){ // [1], [3]
 		double p=0;
 		for(int i=k;i<n;i++){
 			if(lfabs(A[i][k])>p){
-				p=A[i][k];
+				p=lfabs(A[i][k]);
 				kk=i;
-				break;
 			}
 		}
 		if(p==0)return 0;
