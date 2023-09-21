@@ -80,7 +80,7 @@ struct RGA{
 			for(int i=0;i<geneLen;i++){
 				double t=double(rand()%11);
 				double gX=objs[x][i],gy=objs[y][i];
-				tmp.push_back(gX*t+gy*(10.0-t));
+				tmp.push_back((gX*t+gy*(10.0-t))/10.0);
 			}
 
 			for(int i=0;i<Number_of_Mutation;i++){
