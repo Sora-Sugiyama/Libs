@@ -247,7 +247,7 @@ public:
 
 private:
 	random_device rd;
-	void edge2opt(){
+	void RandomEdge2opt(){
 		if(len<4U){
 			cout<<"The number of vertices should be bigger than 3."<<endl;
 			return;
@@ -280,38 +280,41 @@ private:
 		}
 	}
 
-	void Managed2opt(){
+	void edge2opt(){
 		if(len<4U){
 			cout<<"The number of vertices should be bigger than 3."<<endl;
 			return;
 		}
+		pair<double,pair<int,int> >cases={9e18,{0,0}};
 		for(int a=0;a<int(len);a++){
 			for(int b=0;b<a-1;b++){
-				vector<int>tmp;
-				int i=(b+1)%len,j=a;
-				while(i!=j){
-					tmp.push_back(path[i]);
-					i=(i+1)%len;
-				}
-				tmp.push_back(path[j]);
-				j=(a+1)%len,i=b;
-				while(i!=j){
-					tmp.push_back(path[i]);
-					i=(i+len-1)%len;
-				}
-				tmp.push_back(path[j]);
-
-				double nowLoss=LOSS(tmp);
-				if(nowLoss<loss){
-					path=tmp;
-					loss=nowLoss;
-					return;
-				}
+				pair<double,pair<int,int> >now;
+				now={dist(path[a],path[b])+dist(path[(a+1)%len],path[(b+1)%len])-dist(path[a],path[(a+1)%len])-dist(path[b],path[(b+1)%len]),{a,b}};
+				if(now<cases)cases=now;
 			}
+		}
+		int a=cases.second.first,b=cases.second.second;
+		vector<int>tmp;
+		int i=(b+1)%len,j=a;
+		while(i!=j){
+			tmp.push_back(path[i]);
+			i=(i+1)%len;
+		}
+		tmp.push_back(path[j]);
+		j=(a+1)%len,i=b;
+		while(i!=j){
+			tmp.push_back(path[i]);
+			i=(i+len-1)%len;
+		}
+		tmp.push_back(path[j]);
+		double nowLoss=LOSS(tmp);
+		if(nowLoss<loss){
+			path=tmp;
+			loss=nowLoss;
 		}
 	}
 
-	void edge3opt(){
+	void RandomEdge3opt(int a=-1,int b=-1,int c=-1){
 		if(len<6U){
 			cout<<"The number of vertices should be bigger than 6."<<endl;
 			return;
@@ -320,12 +323,14 @@ private:
 		mt19937 gen(rd());
 		uniform_int_distribution<int>uid(0,len-1);
 
-		vector<bool>vb(len);
-		int a=uid(gen),b=uid(gen),c=uid(gen);
-		vb[a]=vb[(a+1)%len]=true;
-		while(vb[b]||vb[(b+1)%len])b=uid(gen);
-		vb[b]=vb[(b+1)%len]=true;
-		while(vb[c]||vb[(c+1)%len])c=uid(gen);
+		if(a==-1||b==-1||c==-1){
+			vector<bool>vb(len);
+			a=uid(gen),b=uid(gen),c=uid(gen);
+			vb[a]=vb[(a+1)%len]=true;
+			while(vb[b]||vb[(b+1)%len])b=uid(gen);
+			vb[b]=vb[(b+1)%len]=true;
+			while(vb[c]||vb[(c+1)%len])c=uid(gen);
+		}
 
 		pair<int,int>A={path[a],path[(a+1)%len]},B={path[b],path[(b+1)%len]},C={path[c],path[(c+1)%len]};
 		vector<pair<double,int> >cases={
@@ -453,6 +458,30 @@ private:
 		}
 	}
 
+	void edge3opt(){
+		pair<double,vector<int> >opt={9e18,{0,0,0}};
+		for(int a=0;a<int(len);a++){
+			for(int b=0;b<a-1;b++){
+				for(int c=0;c<c-1;c++){
+					pair<int,int>A={path[a],path[(a+1)%len]},B={path[b],path[(b+1)%len]},C={path[c],path[(c+1)%len]};
+					vector<pair<double,int> >cases={
+							{dist(A.first,B.first)+dist(A.second,B.second)+dist(C.first,C.second),1},
+							{dist(C.second,A.second)+dist(B.first,B.second)+dist(C.first,A.first),2},
+							{dist(A.first,A.second)+dist(B.first,C.first)+dist(B.second,C.second),3},
+							{dist(A.second,C.second)+dist(A.first,B.second)+dist(C.first,B.first),4},
+							{dist(B.first,C.second)+dist(A.first,B.second)+dist(C.first,A.second),5},
+							{dist(B.first,A.first)+dist(C.second,B.second)+dist(C.first,A.second),6}
+					};
+					pair<double,vector<int> >now={9e18,{a,b,c}};
+					for(auto a:cases)now.first=min(now.first,a.first);
+					now.first=dist(A.first,A.second)+dist(B.first,B.second)+dist(C.first,C.second)-now.first;
+					if(now<opt)opt=now;
+				}
+			}
+		}
+		RandomEdge3opt(opt.second[0],opt.second[1],opt.second[2]);
+	}
+
 	void vertex2opt(){
 		mt19937 gen(rd());
 		uniform_int_distribution<int>uid(0,len-1);
@@ -508,6 +537,7 @@ private:
 		mt19937 gen(rd());
 		uniform_int_distribution<int>(0,len-1);
 		cout<<"Lin-Kernighan is not ready."<<endl;
+
 		return;
 	}
 
@@ -522,11 +552,12 @@ public:
 		else if(type=="2-vertices opt")vertex2opt();
 		else if(type=="3-vertices opt")vertex3opt();
 		else if(type=="Lin-Kernighan")LinKernighan();
-		else if(type=="Managed 2-opt")Managed2opt();
+		else if(type=="2-Random edges opt")RandomEdge2opt();
+		else if(type=="3-Random edges opt")RandomEdge3opt();
 		else{
 			cout<<"Invalid name.\nThere are valid optimizer names.\n";
 			cout<<"*====================*\n";
-			cout<<"2-opt\n3-opt\n2-vertices opt\n3-vertices opt\nManaged 2-opt\nLin-Kernighan\n";
+			cout<<"2-opt\n3-opt\n2-vertices opt\n3-vertices opt\n2-Random edges opt\n3-Random edges opt\nLin-Kernighan\n";
 			cout<<"*====================*\n"<<endl;
 		}
 	}
