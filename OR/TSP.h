@@ -414,7 +414,7 @@ private:
 			i=A.second,j=B.first;
 			while(i!=j){
 				tmp.push_back(path[i]);
-				i=(i+1)%len;
+				i=(i+len-1)%len;
 			}
 			tmp.push_back(path[j]);
 			i=C.second,j=A.first;
@@ -460,7 +460,7 @@ private:
 
 	void edge3opt(){
 		pair<double,vector<int> >opt={9e18,{0,0,0}};
-		for(int a=0;a<int(len);a++){
+		for(int a=0;a<int(len)-1;a++){
 			for(int b=0;b<a-1;b++){
 				for(int c=0;c<c-1;c++){
 					pair<int,int>A={path[a],path[(a+1)%len]},B={path[b],path[(b+1)%len]},C={path[c],path[(c+1)%len]};
