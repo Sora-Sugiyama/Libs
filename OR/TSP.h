@@ -17,7 +17,7 @@
 #include <algorithm>
 using namespace std;
 
-struct solveTSP{
+struct TSP{
 public:
 	bool wasInit=false,wasGenerated=false;
 	unsigned len;
