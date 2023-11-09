@@ -98,7 +98,8 @@ public:
 	}
 
 private:
-void NN(){
+	void NN(){
+		if(wasGenerated)path.clear();
 		random_device rd;
 		mt19937 gen(rd());
 		uniform_int_distribution<int>uid(0,len-1);
@@ -120,8 +121,11 @@ void NN(){
 	}
 
 	void Greedy(){
+		if(wasGenerated)path.clear();
 		vector<pair<double,pair<int,int> > >edge;
+		vector<int>Uni(len);
 		for(unsigned i=0;i<len;i++){
+			Uni[i]=i;
 			for(unsigned j=0;j<i;j++){
 				edge.push_back({dist(i,j),{i,j}});
 			}
@@ -132,94 +136,46 @@ void NN(){
 		for(auto e:edge){
 			int u=e.second.first,v=e.second.second;
 			if(G[u].size()>=2U||G[v].size()>=2U)continue;
-			G[u].push_back(v);
-			G[v].push_back(u);
+			int x=u,y=v;
+			while(x!=Uni[x])x=Uni[x];
+			while(y!=Uni[y]){
+				int tmp=y;
+				y=Uni[y];
+				Uni[tmp]=x;
+			}
+			if(x!=y){
+				Uni[y]=x;
+				G[u].push_back(v);
+				G[v].push_back(u);
+			}
 		}
 
-		vector<vector<int> >paths;
-		vector<int>Path(len),Inv(len);
-		vector<bool>vis(len,false);
+		int x=0;
 		for(unsigned i=0;i<len;i++){
-			if(vis[i])continue;
-			vis[i]=true;
-			vector<int>tmp={int(i)};
-			int x=i;
-			while(1){
-				for(auto y:G[x]){
-					if(vis[y])continue;
-					vis[y]=true;
-					Path[x]=y;
-					Inv[y]=x;
-					x=y;
-					break;
-				}
-				tmp.push_back(x);
-				Path[x]=i;
-				Inv[i]=x;
+			if(G[i].size()==1U){
+				x=i;
 				break;
 			}
-			paths.push_back(tmp);
 		}
-
-		for(unsigned i=1;i<paths.size();i++){
-			auto P=paths[i];
-			pair<int,int>e1,e2;
-			double mx=-9e18;
-			int x=paths.front().front();
-			int y=x;
-			while(1){
-				double w=dist(y,Path[y]);
-				if(w>mx){
-					mx=w;
-					e1={y,Path[y]};
-				}
-				y=Path[y];
-				if(x==y)break;
-			}
-
-			mx=-9e18;
-			x=P.front();
-			y=x;
-			while(1){
-				double w=dist(y,Path[y]);
-				if(w>mx){
-					mx=w;
-					e2={y,Path[y]};
-				}
-				y=Path[y];
-				if(x==y)break;
-			}
-
-			if(dist(e1.first,e2.first)+dist(e1.second,e2.second)<dist(e1.first,e2.second)+dist(e1.second,e2.first)){
-				Path[e1.first]=e2.first;
-				x=y=e2.first;
-				while(1){
-					swap(Path[y],Inv[y]);
-					y=Path[y];
-					if(x==y)break;
-				}
-				Path[e2.second]=e1.second;
-				Inv[e2.first]=e1.first;
-				Inv[e1.second]=e2.second;
-			}else{
-				Path[e1.first]=e2.second;
-				Path[e2.first]=e1.second;
-				Inv[e1.second]=e1.first;
-				Inv[e2.second]=e2.first;
-			}
-		}
-
-		int x=1;
-		path.push_back(x);
-		while(Path[x]!=path.front()){
-			x=Path[x];
+		vector<bool>vis(len+1);
+		vis[x]=true;
+		while(1){
+			bool stop=true;
 			path.push_back(x);
+			for(int y:G[x]){
+				if(vis[y])continue;
+				vis[y]=true;
+				stop=false;
+				x=y;
+				break;
+			}
+			if(stop)break;
 		}
-
 		loss=LOSS(path);
 	}
 
 	void Randomize(){
+		if(wasGenerated)path.clear();
 		path=vector<int>(len);
 		for(unsigned i=0;i<len;i++)path[i]=i;
 		mt19937 gen(time(NULL));
@@ -331,7 +287,9 @@ private:
 			vb[b]=vb[(b+1)%len]=true;
 			while(vb[c]||vb[(c+1)%len])c=uid(gen);
 		}
-
+		if(a>b)swap(a,b);
+		if(b>c)swap(b,c);
+		if(a>b)swap(a,b);
 		pair<int,int>A={path[a],path[(a+1)%len]},B={path[b],path[(b+1)%len]},C={path[c],path[(c+1)%len]};
 		vector<pair<double,int> >cases={
 				{dist(A.first,B.first)+dist(A.second,B.second)+dist(C.first,C.second),1},
@@ -414,7 +372,7 @@ private:
 			i=A.second,j=B.first;
 			while(i!=j){
 				tmp.push_back(path[i]);
-				i=(i+len-1)%len;
+				i=(i+1)%len;
 			}
 			tmp.push_back(path[j]);
 			i=C.second,j=A.first;
