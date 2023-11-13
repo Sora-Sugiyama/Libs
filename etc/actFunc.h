@@ -27,7 +27,7 @@ double LeakyReLU(double m,double x){
 vecd Softmax(vecd z){
 	double sofsum=0.0;
 	for(double x:z)sofsum+=exp(x);
-	for(double &x:z)x/=sofsum;
+	for(double &x:z)x=exp(x)/sofsum;
 	return z;
 }
 
