@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#pragma GCC target("avx2")
 
 using namespace std;
 using mat=vector<vector<double> >;
