@@ -75,7 +75,7 @@ mat Product(mat A,mat B){
 	if(A.size()==1U||A.back().size()==1U||B.back().size()==1U){
 		return NaiveProduct(A,B);
 	}
-	if(A.size()<=316U&&A.back().size()<=316U&&B.back().size()==316U){
+	if(A.size()<=316U&&A.back().size()<=316U&&B.back().size()<=316U){
 		return NaiveProduct(A,B);
 	}
 
