@@ -116,7 +116,7 @@ struct BowyerWatson2d{
 		}
 	}
 
-	void Init(vector<vector<double> >P){
+	void Init(vector<vector<double> >&P){
 		for(auto p:P){
 			if(p.size()!=2U){
 				cout<<"Input points are must be 2-dimensional."<<endl;
